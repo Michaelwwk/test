@@ -34,8 +34,8 @@ jobs:
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
       
-      - name: fetch remote changes
-        run: git fetch --all
+      - name: Push changes (fast-forward only)
+        run: git push origin main --ff-only
 
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
