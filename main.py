@@ -16,17 +16,7 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 logger_file_handler.setFormatter(formatter)
 logger.addHandler(logger_file_handler)
 
-try:
-    SOME_SECRET = os.environ["SOME_SECRET"]
-except KeyError:
-    SOME_SECRET = "Token not available!"
-    #logger.info("Token not available!")
-    #raise
-
-
 if __name__ == "__main__":
-    logger.info(f"Token value: {SOME_SECRET}")
-
     r = requests.get('https://weather.talkpython.fm/api/weather/?city=Berlin&country=DE')
     if r.status_code == 200:
         data = r.json()

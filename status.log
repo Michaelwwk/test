@@ -220,3 +220,17 @@
 2024-01-22 00:38:04,935 - __main__ - INFO - Weather in Berlin: 2.86
 2024-01-29 00:34:00,850 - __main__ - INFO - Token value: 1234
 2024-01-29 00:34:01,071 - __main__ - INFO - Weather in Berlin: 1.69
+2024-01-31 14:12:13,556 - __main__ - INFO - Token value: Token not available!
+2024-01-31 14:12:16,199 - __main__ - INFO - Weather in Berlin: 6.21
+2024-01-31 14:12:44,999 - __main__ - INFO - Token value: Token not available!
+2024-01-31 14:12:46,769 - __main__ - INFO - Weather in Berlin: 6.21
+2024-01-31 14:13:47,339 - __main__ - INFO - Token value: Token not available!
+2024-01-31 14:13:49,194 - __main__ - INFO - Weather in Berlin: 6.21
+2024-01-31 14:19:59,564 - __main__ - INFO - Token value: Token not available!
+2024-01-31 14:20:01,443 - __main__ - INFO - Weather in Berlin: 6.21
+2024-01-31 14:59:06,668 - __main__ - INFO - Token value: Token not available!
+2024-01-31 14:59:08,563 - __main__ - INFO - Weather in Berlin: 6.21
+2024-01-31 15:10:32,673 - __main__ - INFO - Token value: Token not available!
+2024-01-31 15:10:34,902 - __main__ - INFO - Weather in Berlin: 5.72
+2024-01-31 15:17:41,507 - __main__ - INFO - Weather in Berlin: 5.72
+2024-01-31 15:17:54,815 - __main__ - INFO - Weather in Berlin: 5.72
