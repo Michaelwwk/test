@@ -1,8 +1,8 @@
-name: run main.py
+name: Schedule Python Script
 
 on:
   schedule:
-    # - cron: '* * * * *' # At 00:00 on Monday
+    - cron: '* * * * *' # cron: '* * * * *' (runs every 5 mins) # cron: '0 20 * * *' (runs at 4am daily at GMT+08, Singapore time)
 
 jobs:
   build:
@@ -22,9 +22,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: execute py script # run main.py
-        env:
-          SOME_SECRET: ${{ secrets.SOME_SECRET }}
+      - name: execute py script
         run: python main.py
           
       - name: commit files
