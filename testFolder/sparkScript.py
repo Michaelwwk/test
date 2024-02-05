@@ -9,6 +9,8 @@
 import yfinance as yf
 import pyarrow.csv as pv
 import pyarrow.parquet as pq
+import findspark
+findspark.init()
 # import collections
 
 from pyspark.sql import SparkSession
@@ -20,6 +22,11 @@ from pyspark.sql.types import FloatType
 from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
 from pyspark.sql.window import Window
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql import SparkSession
+from pyspark.ml.feature import VectorAssembler, StringIndexer
+from pyspark.ml.classification import RandomForestClassifier
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 
 def sparkScript():
 
@@ -47,6 +54,7 @@ def sparkScript():
 
     # read and convert hdb resale price
     hdb_table = pv.read_csv("resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.csv")
+    iris_data = spark.read.csv("iris-data.csv", header=True, inferSchema=True)
     pq.write_table(hdb_table,'resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.parquet')
     hdb_parquet = pq.ParquetFile('resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.parquet')
 
@@ -74,6 +82,7 @@ def sparkScript():
 
     # # read and convert hdb resale price
     # hdb_table = pv.read_csv("/content/test/resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.csv")
+    # iris_data = spark.read.csv("/content/drive/MyDrive/iris-data.csv", header=True, inferSchema=True)
     # pq.write_table(hdb_table,'/content/test/resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.parquet')
     # hdb_parquet = pq.ParquetFile('/content/test/resale-flat-prices-based-on-registration-date-from-mar-2012-to-dec-2014.parquet')
 
@@ -343,3 +352,38 @@ def sparkScript():
     print(hdb_parquet.metadata.row_group(0))
     # inspect the column chunk metadata
     print(hdb_parquet.metadata.row_group(0).column(9).statistics)
+
+    # Assuming the target variable is "class" and other columns are features
+    feature_cols = iris_data.columns[:-1]
+    # Convert string labels into numerical labels
+    indexer = StringIndexer(inputCol="class", outputCol="label")
+    iris_data = indexer.fit(iris_data).transform(iris_data)
+    # Create a feature vector by assembling the feature columns
+    assembler = VectorAssembler(inputCols=feature_cols, outputCol="features")
+    data = assembler.transform(iris_data)
+    # Split the data into training and testing sets
+    (training_data, testing_data) = data.randomSplit([0.8, 0.2], seed=123)
+    # Customized parameters
+    num_trees = 10
+    max_depth = 5
+    # Create and train a RandomForestClassifier with customized parameters
+    rf = RandomForestClassifier(
+        labelCol="label",
+        featuresCol="features",
+        numTrees=num_trees,
+        maxDepth=max_depth
+    )
+    model = rf.fit(training_data)
+    # Make predictions on the testing data
+    predictions = model.transform(testing_data)
+    # Evaluate the model
+    evaluator = MulticlassClassificationEvaluator(labelCol="label", metricName="accuracy")
+    accuracy = evaluator.evaluate(predictions)
+    # Print the accuracy
+    print("Accuracy: {:.2f}".format(accuracy))
+
+    # Show the feature importances
+    print("Feature Importances: ", model.featureImportances)
+
+    # Stop the Spark session
+    spark.stop()
